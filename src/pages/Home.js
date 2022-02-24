@@ -27,17 +27,9 @@ export default class Home extends Component {
         console.log(error);
       });
 
-    axios
-      .get(API_URL + "keranjangs")
-      .then((response) => {
-        const keranjangs = response.data;
-        this.setState({ keranjangs });
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    this.getDataKeranjang();
   }
-
+  /*
   componentDidUpdate(prevState) {
     if (this.state.keranjangs !== prevState.keranjangs) {
       axios
@@ -50,7 +42,19 @@ export default class Home extends Component {
           console.log(error);
         });
     }
-  }
+  }*/
+
+  getDataKeranjang = () => {
+    axios
+      .get(API_URL + "keranjangs")
+      .then((response) => {
+        const keranjangs = response.data;
+        this.setState({ keranjangs });
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
 
   masukKeranjang = (value) => {
     axios
@@ -66,6 +70,7 @@ export default class Home extends Component {
           axios
             .post(API_URL + "keranjangs", data)
             .then((response) => {
+              this.getDataKeranjang();
               swal({
                 title: "Sukes",
                 text: "Sukses Masuk Keranjang " + data.product.nama,
@@ -87,6 +92,7 @@ export default class Home extends Component {
           axios
             .put(API_URL + "keranjangs/" + response.data[0].id, data)
             .then((response) => {
+              this.getDataKeranjang();
               swal({
                 title: "Sukes",
                 text: "Sukses Masuk Keranjang " + data.product.nama,
@@ -133,12 +139,12 @@ export default class Home extends Component {
                 changeCategory={this.changeCategory}
                 categoryPilih={categoryPilih}
               />
-              <Col>
+              <Col className="">
                 <h4>
                   <strong>Daftar Product</strong>
                 </h4>
                 <hr />
-                <Row>
+                <Row className="overflow-auto menu">
                   {menus &&
                     menus.map((menu) => (
                       <Menu
@@ -149,7 +155,10 @@ export default class Home extends Component {
                     ))}
                 </Row>
               </Col>
-              <Hasil keranjangs={keranjangs} />
+              <Hasil
+                keranjangs={keranjangs}
+                getDataKeranjang={this.getDataKeranjang}
+              />
             </Row>
           </Container>
         </div>
